@@ -1,0 +1,39 @@
+{
+  "pages": {
+    "/_not-found/page": [
+      "static/chunks/webpack-100b9e646d9c912e.js",
+      "static/chunks/fd9d1056-49ca28257eb7a92c.js",
+      "static/chunks/117-d9170e96af426205.js",
+      "static/chunks/main-app-b08d79fdd7a13da2.js",
+      "static/chunks/app/_not-found/page-4b9eb8aab41bf6df.js"
+    ],
+    "/layout": [
+      "static/chunks/webpack-100b9e646d9c912e.js",
+      "static/chunks/fd9d1056-49ca28257eb7a92c.js",
+      "static/chunks/117-d9170e96af426205.js",
+      "static/chunks/main-app-b08d79fdd7a13da2.js",
+      "static/chunks/app/layout-cbd3ebdc4ecc5247.js"
+    ],
+    "/(admin)/xmas/page": [
+      "static/chunks/webpack-100b9e646d9c912e.js",
+      "static/chunks/fd9d1056-49ca28257eb7a92c.js",
+      "static/chunks/117-d9170e96af426205.js",
+      "static/chunks/main-app-b08d79fdd7a13da2.js",
+      "static/chunks/app/(admin)/xmas/page-31ee01dab9e76f5a.js"
+    ],
+    "/(admin)/municipalities/page": [
+      "static/chunks/webpack-100b9e646d9c912e.js",
+      "static/chunks/fd9d1056-49ca28257eb7a92c.js",
+      "static/chunks/117-d9170e96af426205.js",
+      "static/chunks/main-app-b08d79fdd7a13da2.js",
+      "static/chunks/app/(admin)/municipalities/page-9ee49911ba0044c5.js"
+    ],
+    "/page": [
+      "static/chunks/webpack-100b9e646d9c912e.js",
+      "static/chunks/fd9d1056-49ca28257eb7a92c.js",
+      "static/chunks/117-d9170e96af426205.js",
+      "static/chunks/main-app-b08d79fdd7a13da2.js",
+      "static/chunks/app/page-8b292c516af16e8d.js"
+    ]
+  }
+}
