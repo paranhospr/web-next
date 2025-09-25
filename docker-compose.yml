@@ -1,0 +1,52 @@
+
+version: '3.8'
+
+services:
+  orchestrator-agent:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      # Required environment variables (set these in .env file)
+      - AGENT_API_KEY=${AGENT_API_KEY}
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - GITHUB_OWNER=${GITHUB_OWNER}
+      - GITHUB_REPO=${GITHUB_REPO}
+      - RENDER_DEPLOY_HOOK_API=${RENDER_DEPLOY_HOOK_API}
+      - RENDER_DEPLOY_HOOK_WEB=${RENDER_DEPLOY_HOOK_WEB}
+      - CLOUDFLARE_API_TOKEN=${CLOUDFLARE_API_TOKEN}
+      - CLOUDFLARE_ZONE_ID=${CLOUDFLARE_ZONE_ID}
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_SERVICE_ROLE=${SUPABASE_SERVICE_ROLE}
+      - GOOGLE_PROJECT_ID=${GOOGLE_PROJECT_ID}
+      - GOOGLE_CLIENT_EMAIL=${GOOGLE_CLIENT_EMAIL}
+      - GOOGLE_PRIVATE_KEY=${GOOGLE_PRIVATE_KEY}
+      - GOOGLE_CALENDAR_ID=${GOOGLE_CALENDAR_ID}
+      
+      # Optional configuration
+      - AUTO_FIX=${AUTO_FIX:-false}
+      - MAX_FIX_ATTEMPTS=${MAX_FIX_ATTEMPTS:-3}
+      - ENABLE_HUMAN_GATE=${ENABLE_HUMAN_GATE:-false}
+      - ENVIRONMENT=${ENVIRONMENT:-production}
+      - DATABASE_PATH=${DATABASE_PATH:-/tmp/orchestrator.db}
+      
+    volumes:
+      # Persist SQLite database
+      - orchestrator_data:/tmp
+      
+    restart: unless-stopped
+    
+    healthcheck:
+      test: ["CMD", "python", "-c", "import httpx; httpx.get('http://localhost:8080/', timeout=10)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  orchestrator_data:
+    driver: local
+
+networks:
+  default:
+    name: orchestrator-network

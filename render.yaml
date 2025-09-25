@@ -1,12 +1,58 @@
 services:
   - type: web
-    name: paranhos-frontend
-    env: node
-    plan: free
-    buildCommand: npm install --legacy-peer-deps && npm run build
-    startCommand: npm start
+    name: orchestrator-agent
+    runtime: python
+    plan: starter
+    region: oregon
+    branch: main
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.server:app --host 0.0.0.0 --port 8080
     envVars:
-      - key: NODE_ENV
+      - key: AGENT_API_KEY
+        value: your-secret-api-key-here
+      - key: GITHUB_TOKEN
+        value: ghp_your_github_token_here
+      - key: GITHUB_OWNER
+        value: luishspontes
+      - key: GITHUB_REPO
+        value: paranhospr.com.br
+      - key: RENDER_DEPLOY_HOOK_API
+        value: https://api.render.com/deploy/srv-your-api-service-id
+      - key: RENDER_DEPLOY_HOOK_WEB
+        value: https://api.render.com/deploy/srv-your-web-service-id
+      - key: CLOUDFLARE_API_TOKEN
+        value: your-cloudflare-api-token
+      - key: CLOUDFLARE_ZONE_ID
+        value: your-cloudflare-zone-id
+      - key: SUPABASE_URL
+        value: https://your-project.supabase.co
+      - key: SUPABASE_SERVICE_ROLE
+        value: your-supabase-service-role-key
+      - key: GOOGLE_PROJECT_ID
+        value: your-google-project-id
+      - key: GOOGLE_CLIENT_EMAIL
+        value: your-service-account@your-project.iam.gserviceaccount.com
+      - key: GOOGLE_PRIVATE_KEY
+        value: "-----BEGIN PRIVATE KEY-----\nYour private key here\n-----END PRIVATE KEY-----\n"
+      - key: GOOGLE_CALENDAR_ID
+        value: your-calendar-id@group.calendar.google.com
+      - key: AUTO_FIX
+        value: "false"
+      - key: MAX_FIX_ATTEMPTS
+        value: "3"
+      - key: ENABLE_HUMAN_GATE
+        value: "false"
+      - key: ENVIRONMENT
         value: production
-      - key: NEXT_PUBLIC_API_URL
-        value: https://paranhos-api-v2.onrender.com
+      - key: PORT
+        value: "8080"
+      - key: DATABASE_PATH
+        value: /tmp/orchestrator.db
+      - key: VERIFY_TIMEOUT
+        value: "30"
+      - key: VERIFY_MAX_RETRIES
+        value: "3"
+      - key: HUMAN_GATE_TIMEOUT
+        value: "300"
+      - key: HUMAN_GATE_AUTO_APPROVE
+        value: "false"
