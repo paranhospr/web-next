@@ -132,7 +132,8 @@ async def execute_task(
                 "result": None,
                 "error": None,
                 "steps": [],
-                "auto_fix_attempts": 0
+                "auto_fix_attempts": 0,
+                "messages": []
             }
             
             # Execute the graph
