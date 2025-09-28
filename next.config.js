@@ -6,8 +6,15 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  experimental: {
-    appDir: true,
+  output: 'standalone',
+  trailingSlash: true,
+  async rewrites() {
+    return [
+      {
+        source: '/admin/:path*',
+        destination: '/admin/:path*',
+      },
+    ]
   },
 }
 
