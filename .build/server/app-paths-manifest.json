@@ -1,0 +1,20 @@
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/admin/conteudo/realizacoes/page": "app/admin/conteudo/realizacoes/page.js",
+  "/admin/config/page": "app/admin/config/page.js",
+  "/admin/conteudo/timeline/page": "app/admin/conteudo/timeline/page.js",
+  "/admin/page": "app/admin/page.js",
+  "/admin/login/page": "app/admin/login/page.js",
+  "/admin/conteudo/perfil/page": "app/admin/conteudo/perfil/page.js",
+  "/agenda/page": "app/agenda/page.js",
+  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
+  "/municipios/[slug]/page": "app/municipios/[slug]/page.js",
+  "/municipios/page": "app/municipios/page.js",
+  "/api/health/route": "app/api/health/route.js",
+  "/sobre/page": "app/sobre/page.js",
+  "/page": "app/page.js",
+  "/territorios/page": "app/territorios/page.js",
+  "/blog/page": "app/blog/page.js",
+  "/trajetoria/page": "app/trajetoria/page.js",
+  "/realizacoes/page": "app/realizacoes/page.js"
+}
