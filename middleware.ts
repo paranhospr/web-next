@@ -1,17 +1,23 @@
-
-import { withAuth } from "next-auth/middleware";
-
-export default withAuth(
-  function middleware(req) {
-    // Middleware logic here if needed
-  },
-  {
-    callbacks: {
-      authorized: ({ token }) => !!token
-    },
-  }
-);
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
 
 export const config = {
-  matcher: ["/admin/:path*"]
-};
+  matcher: ['/admin/:path*'],
+}
+
+export default async function middleware(req: NextRequest) {
+  const url = new URL(req.url);
+
+  if (url.pathname.startsWith('/admin/health')) return NextResponse.next();
+
+  const hasAuthEnv = !!process.env.NEXTAUTH_URL && !!process.env.NEXTAUTH_SECRET;
+  if (!hasAuthEnv) return NextResponse.next();
+
+  const hasSessionCookie = req.cookies.get('next-auth.session-token') || req.cookies.get('__Secure-next-auth.session-token');
+  if (!hasSessionCookie) {
+    url.pathname = '/admin/login';
+    return NextResponse.redirect(url);
+  }
+
+  return NextResponse.next();
+}
