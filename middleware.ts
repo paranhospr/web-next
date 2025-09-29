@@ -11,6 +11,10 @@ export default withAuth(
         if (req.nextUrl.pathname.startsWith('/admin/health')) {
           return true
         }
+        // Allow /admin/login without authentication
+        if (req.nextUrl.pathname.startsWith('/admin/login')) {
+          return true
+        }
         // Require authentication for all other /admin routes
         return !!token
       }
