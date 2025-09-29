@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "recharts": "^2.12.7",
+    "react-leaflet": "^4.2.1",
+    "leaflet": "^1.9.4",
+    "date-fns": "^3.6.0",
+    "react-data-table-component": "^7.6.2"
+  }
+}
