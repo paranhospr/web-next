@@ -1,0 +1,1 @@
+export default function Section({title,children}:{title:string;children:React.ReactNode}){return (<section style={{padding:'24px',borderTop:'1px solid #223',background:'#0e152d',color:'#fff'}}><div className='container'><h2>{title}</h2>{children}</div></section>)}

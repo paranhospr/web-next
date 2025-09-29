@@ -1,1 +1,1 @@
-export default function RootLayout({children}:{children:React.ReactNode}){return <html><body>{children}</body></html>}
+export const metadata={title:'Paranhos PR — Portal Oficial'};export default function RootLayout({children}:{children:React.ReactNode}){return <html lang='pt-BR'><body>{children}</body></html>}
