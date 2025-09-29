@@ -192,8 +192,8 @@ export function MunicipalityManagement({ municipalities, territories, onUpdate }
                       <Checkbox
                         id="isOurs"
                         checked={editData.isOurs}
-                        onCheckedChange={(checked) =>
-                          setEditData(prev => ({ ...prev, isOurs: checked as boolean }))
+                        onCheckedChange={(checked: boolean) =>
+                          setEditData(prev => ({ ...prev, isOurs: checked }))
                         }
                       />
                       <Label htmlFor="isOurs">É nosso município</Label>
