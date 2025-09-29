@@ -1,58 +1,127 @@
-export default function LoginPage() {
+
+'use client';
+
+import { useState } from "react";
+import { signIn, getSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Loader2, Lock, Mail } from "lucide-react";
+
+export default function AdminLoginPage() {
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError('');
+
+    try {
+      const result = await signIn('credentials', {
+        email: formData.email,
+        password: formData.password,
+        redirect: false,
+      });
+
+      if (result?.error) {
+        setError('Credenciais inválidas. Tente novamente.');
+      } else {
+        router.replace('/admin');
+      }
+    } catch (error) {
+      setError('Erro ao fazer login. Tente novamente.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <div style={{ padding: '40px', fontFamily: 'system-ui, sans-serif', backgroundColor: '#34495e', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ backgroundColor: 'white', padding: '50px', borderRadius: '15px', boxShadow: '0 10px 30px rgba(0,0,0,0.2)', maxWidth: '400px', width: '100%' }}>
-        <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-          <h1 style={{ color: '#2c3e50', fontSize: '2rem', marginBottom: '10px' }}>🔐 Login Administrativo</h1>
-          <p style={{ color: '#7f8c8d' }}>Paranhos PR - Acesso Restrito</p>
-        </div>
-        
-        <form style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          <div>
-            <label style={{ display: 'block', marginBottom: '8px', color: '#34495e', fontWeight: 'bold' }}>👤 Usuário:</label>
-            <input 
-              type="text" 
-              placeholder="Digite seu usuário"
-              style={{ 
-                width: '100%', padding: '12px', border: '2px solid #ecf0f1', borderRadius: '8px', 
-                fontSize: '1rem', outline: 'none', transition: 'border-color 0.3s'
-              }}
-            />
-          </div>
-          
-          <div>
-            <label style={{ display: 'block', marginBottom: '8px', color: '#34495e', fontWeight: 'bold' }}>🔑 Senha:</label>
-            <input 
-              type="password" 
-              placeholder="Digite sua senha"
-              style={{ 
-                width: '100%', padding: '12px', border: '2px solid #ecf0f1', borderRadius: '8px', 
-                fontSize: '1rem', outline: 'none', transition: 'border-color 0.3s'
-              }}
-            />
-          </div>
-          
-          <button 
-            type="submit"
-            style={{ 
-              padding: '15px', backgroundColor: '#3498db', color: 'white', border: 'none', 
-              borderRadius: '8px', fontSize: '1.1rem', fontWeight: 'bold', cursor: 'pointer',
-              transition: 'background-color 0.3s'
-            }}
-          >
-            🚀 Entrar
-          </button>
-        </form>
-        
-        <div style={{ marginTop: '30px', textAlign: 'center' }}>
-          <a href="/admin" style={{ color: '#3498db', textDecoration: 'none' }}>← Voltar ao Admin</a>
-        </div>
-        
-        <div style={{ marginTop: '30px', padding: '15px', backgroundColor: '#f8f9fa', borderRadius: '8px', textAlign: 'center' }}>
-          <small style={{ color: '#7f8c8d' }}>
-            🛡️ Área restrita - Acesso apenas para administradores autorizados
-          </small>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center px-6">
+      <div className="max-w-md w-full">
+        <Card className="shadow-lg">
+          <CardHeader className="text-center">
+            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+              <Lock className="w-6 h-6 text-blue-600" />
+            </div>
+            <CardTitle className="text-2xl font-bold">Admin Login</CardTitle>
+            <CardDescription>
+              Acesse a área administrativa do Paranhos PR
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="admin@paranhospr.com.br"
+                    value={formData.email}
+                    onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                    className="pl-10"
+                    disabled={isLoading}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="password">Senha</Label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <Input
+                    id="password"
+                    type="password"
+                    placeholder="••••••••"
+                    value={formData.password}
+                    onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
+                    className="pl-10"
+                    disabled={isLoading}
+                    required
+                  />
+                </div>
+              </div>
+
+              {error && (
+                <Alert variant="destructive">
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
+              )}
+
+              <Button 
+                type="submit" 
+                className="w-full" 
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Entrando...
+                  </>
+                ) : (
+                  'Entrar'
+                )}
+              </Button>
+            </form>
+
+            <div className="mt-6 text-center">
+              <p className="text-sm text-gray-600">
+                Área restrita para administradores
+              </p>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

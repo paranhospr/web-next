@@ -1,74 +1,139 @@
-export default function AdminPage() {
+
+'use client';
+
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+
+export default function AdminDashboard() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (status === 'loading') return; // Ainda carregando
+    if (!session) {
+      router.push('/admin/login');
+      return;
+    }
+  }, [session, status, router]);
+
+  if (status === 'loading') {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-lg">Carregando...</div>
+      </div>
+    );
+  }
+
+  if (!session) {
+    return null;
+  }
+
+  const adminCards = [
+    {
+      title: 'Perfil e Biografias',
+      description: 'Gerenciar biografias (curta, média, longa) e informações do perfil',
+      href: '/admin/conteudo/perfil',
+      icon: '👤',
+      color: 'bg-blue-500'
+    },
+    {
+      title: 'Timeline/Trajetória',
+      description: 'Adicionar, editar ou remover marcos da trajetória profissional',
+      href: '/admin/conteudo/timeline',
+      icon: '📅',
+      color: 'bg-green-500'
+    },
+    {
+      title: 'Realizações',
+      description: 'Gerenciar realizações com indicadores quantificados',
+      href: '/admin/conteudo/realizacoes',
+      icon: '🏆',
+      color: 'bg-purple-500'
+    },
+    {
+      title: 'Configurações',
+      description: 'Cores do site, contatos, redes sociais e configurações gerais',
+      href: '/admin/config',
+      icon: '⚙️',
+      color: 'bg-orange-500'
+    }
+  ];
+
   return (
-    <div style={{ padding: '40px', fontFamily: 'system-ui, sans-serif', backgroundColor: '#f8f9fa', minHeight: '100vh' }}>
-      <div style={{ maxWidth: '1000px', margin: '0 auto', backgroundColor: 'white', padding: '40px', borderRadius: '12px', boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }}>
-        <h1 style={{ color: '#2c3e50', fontSize: '2.5rem', marginBottom: '10px', borderBottom: '4px solid #3498db', paddingBottom: '15px' }}>
-          🏛️ Área Administrativa - Paranhos PR
-        </h1>
-        <p style={{ fontSize: '1.2rem', color: '#7f8c8d', marginBottom: '40px' }}>
-          Portal administrativo para gestão de conteúdo e configurações
-        </p>
+    <div className="min-h-screen bg-gray-50">
+      <div className="container mx-auto px-4 py-8 max-w-6xl">
         
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '25px', marginTop: '40px' }}>
-          <a href="/admin/dashboard" style={{ 
-            display: 'block', padding: '30px', backgroundColor: '#3498db', color: 'white', 
-            textDecoration: 'none', borderRadius: '10px', textAlign: 'center', fontSize: '1.1rem',
-            transition: 'transform 0.2s', boxShadow: '0 2px 10px rgba(52,152,219,0.3)'
-          }}>
-            📊 Dashboard<br/>
-            <small style={{ opacity: '0.9', fontSize: '0.9rem' }}>Visão geral do sistema</small>
-          </a>
-          
-          <a href="/admin/login" style={{ 
-            display: 'block', padding: '30px', backgroundColor: '#2ecc71', color: 'white', 
-            textDecoration: 'none', borderRadius: '10px', textAlign: 'center', fontSize: '1.1rem',
-            transition: 'transform 0.2s', boxShadow: '0 2px 10px rgba(46,204,113,0.3)'
-          }}>
-            🔐 Login<br/>
-            <small style={{ opacity: '0.9', fontSize: '0.9rem' }}>Autenticação</small>
-          </a>
-          
-          <a href="/admin/settings" style={{ 
-            display: 'block', padding: '30px', backgroundColor: '#e74c3c', color: 'white', 
-            textDecoration: 'none', borderRadius: '10px', textAlign: 'center', fontSize: '1.1rem',
-            transition: 'transform 0.2s', boxShadow: '0 2px 10px rgba(231,76,60,0.3)'
-          }}>
-            ⚙️ Configurações<br/>
-            <small style={{ opacity: '0.9', fontSize: '0.9rem' }}>Ajustes do sistema</small>
-          </a>
-          
-          <a href="/admin/config" style={{ 
-            display: 'block', padding: '30px', backgroundColor: '#9b59b6', color: 'white', 
-            textDecoration: 'none', borderRadius: '10px', textAlign: 'center', fontSize: '1.1rem',
-            transition: 'transform 0.2s', boxShadow: '0 2px 10px rgba(155,89,182,0.3)'
-          }}>
-            🔧 Configuração<br/>
-            <small style={{ opacity: '0.9', fontSize: '0.9rem' }}>Parâmetros gerais</small>
-          </a>
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Painel Administrativo
+          </h1>
+          <p className="text-gray-600">
+            Bem-vindo, {session.user?.email}. Gerencie o conteúdo do portal.
+          </p>
         </div>
-        
-        <div style={{ marginTop: '50px', padding: '20px', backgroundColor: '#ecf0f1', borderRadius: '8px' }}>
-          <h3 style={{ color: '#34495e', marginBottom: '15px' }}>📋 Status do Sistema</h3>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px' }}>
-            <div style={{ padding: '15px', backgroundColor: 'white', borderRadius: '6px' }}>
-              <strong style={{ color: '#27ae60' }}>✅ Frontend:</strong> Online
-            </div>
-            <div style={{ padding: '15px', backgroundColor: 'white', borderRadius: '6px' }}>
-              <strong style={{ color: '#27ae60' }}>✅ API:</strong> Funcionando
-            </div>
-            <div style={{ padding: '15px', backgroundColor: 'white', borderRadius: '6px' }}>
-              <strong style={{ color: '#27ae60' }}>✅ DNS:</strong> Configurado
-            </div>
-            <div style={{ padding: '15px', backgroundColor: 'white', borderRadius: '6px' }}>
-              <strong style={{ color: '#27ae60' }}>✅ SSL:</strong> Ativo
-            </div>
+
+        {/* Quick Stats */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div className="bg-white p-4 rounded-lg shadow">
+            <div className="text-2xl font-bold text-blue-600">4</div>
+            <div className="text-sm text-gray-600">Páginas Públicas</div>
+          </div>
+          <div className="bg-white p-4 rounded-lg shadow">
+            <div className="text-2xl font-bold text-green-600">12</div>
+            <div className="text-sm text-gray-600">Marcos Timeline</div>
+          </div>
+          <div className="bg-white p-4 rounded-lg shadow">
+            <div className="text-2xl font-bold text-purple-600">10</div>
+            <div className="text-sm text-gray-600">Realizações</div>
+          </div>
+          <div className="bg-white p-4 rounded-lg shadow">
+            <div className="text-2xl font-bold text-orange-600">8</div>
+            <div className="text-sm text-gray-600">FAQs</div>
           </div>
         </div>
-        
-        <div style={{ marginTop: '30px', textAlign: 'center', color: '#7f8c8d' }}>
-          <p>Paranhos PR - Sistema Administrativo v1.0</p>
-          <p style={{ fontSize: '0.9rem' }}>Desenvolvido para gestão municipal eficiente</p>
+
+        {/* Admin Cards */}
+        <div className="grid md:grid-cols-2 gap-6 mb-8">
+          {adminCards.map((card, index) => (
+            <Card key={index} className="hover:shadow-lg transition-shadow">
+              <Link href={card.href}>
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-3">
+                    <div className={`w-10 h-10 rounded-full ${card.color} flex items-center justify-center text-white text-lg`}>
+                      {card.icon}
+                    </div>
+                    <span>{card.title}</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-600 text-sm">
+                    {card.description}
+                  </p>
+                </CardContent>
+              </Link>
+            </Card>
+          ))}
         </div>
+
+        {/* Actions */}
+        <div className="flex flex-col sm:flex-row gap-4">
+          <Link href="/" target="_blank">
+            <Button variant="outline" className="w-full sm:w-auto">
+              Ver Site Público
+            </Button>
+          </Link>
+          <Link href="/api/auth/signout">
+            <Button variant="destructive" className="w-full sm:w-auto">
+              Sair
+            </Button>
+          </Link>
+        </div>
+
       </div>
     </div>
   );
