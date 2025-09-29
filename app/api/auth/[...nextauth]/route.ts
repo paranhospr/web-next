@@ -3,6 +3,19 @@ import CredentialsProvider from 'next-auth/providers/credentials'
 
 const handler = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
+  trustHost: true, // Critical for Render/Cloudflare deployment
+  useSecureCookies: true, // Force secure cookies in production
+  cookies: {
+    sessionToken: {
+      name: 'next-auth.session-token',
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: true
+      }
+    }
+  },
   providers: [
     CredentialsProvider({
       name: 'credentials',
@@ -38,6 +51,13 @@ const handler = NextAuth({
         session.user.id = token.id as string
       }
       return session
+    },
+    async redirect({ url, baseUrl }) {
+      // Prevent redirect loops
+      if (url.includes('/admin/login') && url.includes('/api/auth/signin')) {
+        return `${baseUrl}/admin/dashboard`
+      }
+      return url.startsWith(baseUrl) ? url : baseUrl
     }
   }
 })

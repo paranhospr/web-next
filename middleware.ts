@@ -7,21 +7,40 @@ export default withAuth(
   {
     callbacks: {
       authorized: ({ token, req }) => {
-        // Allow /admin/health without authentication
-        if (req.nextUrl.pathname.startsWith('/admin/health')) {
+        const pathname = req.nextUrl.pathname
+        
+        // Always allow health checks (for monitoring)
+        if (pathname.startsWith('/admin/health')) {
           return true
         }
-        // Allow /admin/login without authentication
-        if (req.nextUrl.pathname.startsWith('/admin/login')) {
+        
+        // Always allow login page
+        if (pathname.startsWith('/admin/login')) {
           return true
         }
-        // Require authentication for all other /admin routes
-        return !!token
+        
+        // Allow mock API routes (they're part of the app, not protected resources)
+        if (pathname.startsWith('/api/mock')) {
+          return true
+        }
+        
+        // Allow NextAuth API routes (prevent redirect loops)
+        if (pathname.startsWith('/api/auth')) {
+          return true
+        }
+        
+        // All other /admin routes require authentication
+        if (pathname.startsWith('/admin')) {
+          return !!token
+        }
+        
+        // Allow everything else
+        return true
       }
     }
   }
 )
 
 export const config = {
-  matcher: ['/admin/:path*']
+  matcher: ['/admin/:path*', '/api/mock/:path*']
 }
