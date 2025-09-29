@@ -1,0 +1,1 @@
+export default function Hero(){return (<header className='hero'><div className='container'><h1>Paranhos PR</h1><p>Portal institucional em implantação.</p><div style={{marginTop:12,display:'flex',gap:12}}><a className='btn' href='/admin/login'>Área Administrativa</a><a className='btn' href='/admin/health'>Status do Sistema</a></div></div></header>)}

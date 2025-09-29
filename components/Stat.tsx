@@ -1,0 +1,1 @@
+export default function Stat({label,value}:{label:string;value:string}){return (<div style={{background:'#0f1830',color:'#fff',border:'1px solid #334',borderRadius:12,padding:16}}><div style={{opacity:.7,fontSize:12}}>{label}</div><div style={{fontSize:26,fontWeight:800}}>{value}</div></div>)}
