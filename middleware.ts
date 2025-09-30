@@ -1,19 +1,11 @@
-
-import { NextResponse } from "next/server"
-import type { NextRequest } from "next/server"
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
 
 export function middleware(req: NextRequest) {
-  const { pathname } = req.nextUrl
-  
-  // Liberar rotas específicas do admin
-  if (pathname.startsWith("/admin/health") || pathname.startsWith("/admin/login")) {
+  const p = req.nextUrl.pathname
+  if (p.startsWith('/admin/health') || p.startsWith('/admin/login') || p.startsWith('/api/auth')) {
     return NextResponse.next()
   }
-  
-  // Para outras rotas admin, deixar passar (NextAuth vai gerenciar)
   return NextResponse.next()
 }
-
-export const config = {
-  matcher: ["/admin/:path*"]
-}
+export const config = { matcher: ['/admin/:path*'] }
