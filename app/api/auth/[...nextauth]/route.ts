@@ -4,16 +4,15 @@ import Credentials from "next-auth/providers/credentials"
 
 const handler = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
-  strategy: 'jwt',
+  session: {
+    strategy: 'jwt',
+    maxAge: 24 * 60 * 60, // 24 hours
+  },
   trustHost: true,
   useSecureCookies: true,
   pages: { 
     signIn: '/admin/login',
     error: '/admin/login'
-  },
-  session: {
-    strategy: 'jwt',
-    maxAge: 24 * 60 * 60, // 24 hours
   },
   cookies: {
     sessionToken: {
@@ -22,8 +21,7 @@ const handler = NextAuth({
         httpOnly: true,
         sameSite: 'lax',
         path: '/',
-        secure: true,
-        domain: process.env.NODE_ENV === 'production' ? '.paranhospr.com.br' : undefined
+        secure: true
       }
     }
   },
