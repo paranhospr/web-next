@@ -1,0 +1,16 @@
+INFO:     Started server process [2279]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8080 (Press CTRL+C to quit)
+📊 State store initialized: /tmp/orchestrator.db
+🚀 Orchestrator Agent started successfully
+🧠 Planning task: verify
+📋 Plan created: {'task_type': 'verify', 'tools_needed': ['verifier'], 'execution_order': ['verifier']}
+INFO:     127.0.0.1:52420 - "POST /task HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38428 - "GET /status/6c4bde4b-f604-4151-b6c5-213d338ce308 HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [2279]
+📊 State store closed
+👋 Orchestrator Agent shutdown complete
