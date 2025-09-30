@@ -1,21 +1,19 @@
+
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
   
-  // Liberar rotas específicas
+  // Sempre liberar estas rotas sem qualquer verificação
   if (
     pathname.startsWith("/admin/login") ||
     pathname.startsWith("/admin/health") ||
-    pathname.startsWith("/api/auth/")
+    pathname.startsWith("/api/auth/") ||
+    pathname === "/admin" ||
+    pathname.startsWith("/_next/") ||
+    pathname.startsWith("/favicon")
   ) {
-    return NextResponse.next()
-  }
-  
-  // Proteger outras rotas /admin/*
-  if (pathname.startsWith("/admin/")) {
-    // Aqui pode adicionar lógica de proteção se necessário
     return NextResponse.next()
   }
   
@@ -23,5 +21,7 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/api/auth/:path*"]
+  matcher: [
+    "/((?!api|_next/static|_next/image|favicon.ico).*)",
+  ]
 }
