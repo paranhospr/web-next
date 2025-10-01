@@ -1,27 +1,51 @@
 
-import NextAuth from "next-auth"
+import NextAuth, { NextAuthOptions } from "next-auth"
 import Credentials from "next-auth/providers/credentials"
 
-const handler = NextAuth({
+export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: 'jwt',
     maxAge: 24 * 60 * 60, // 24 hours
   },
   trustHost: true,
-  useSecureCookies: true,
+  useSecureCookies: process.env.NODE_ENV === 'production',
   pages: { 
     signIn: '/admin/login',
     error: '/admin/login'
   },
   cookies: {
     sessionToken: {
-      name: `next-auth.session-token`,
+      name: process.env.NODE_ENV === 'production' 
+        ? '__Secure-next-auth.session-token'
+        : 'next-auth.session-token',
       options: {
         httpOnly: true,
         sameSite: 'lax',
         path: '/',
-        secure: true
+        secure: process.env.NODE_ENV === 'production'
+      }
+    },
+    callbackUrl: {
+      name: process.env.NODE_ENV === 'production'
+        ? '__Secure-next-auth.callback-url'
+        : 'next-auth.callback-url',
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NODE_ENV === 'production'
+      }
+    },
+    csrfToken: {
+      name: process.env.NODE_ENV === 'production'
+        ? '__Host-next-auth.csrf-token'
+        : 'next-auth.csrf-token',
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NODE_ENV === 'production'
       }
     }
   },
@@ -65,6 +89,8 @@ const handler = NextAuth({
       return session
     }
   }
-})
+}
+
+const handler = NextAuth(authOptions)
 
 export { handler as GET, handler as POST }

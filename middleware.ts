@@ -6,25 +6,31 @@ import { getToken } from "next-auth/jwt"
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
   
-  // Sempre liberar estas rotas sem qualquer verificação
+  // Lista de rotas públicas que NUNCA devem ser protegidas
+  const publicPaths = [
+    '/admin/login',
+    '/admin/health',
+    '/api/auth/',
+    '/_next/',
+    '/favicon',
+    '/api/'
+  ]
+  
+  // Se é rota pública ou não é /admin, liberar imediatamente
   if (
-    pathname.startsWith("/admin/login") ||
-    pathname.startsWith("/admin/health") ||
-    pathname.startsWith("/api/auth/") ||
-    pathname.startsWith("/_next/") ||
-    pathname.startsWith("/favicon") ||
-    pathname === "/" ||
-    pathname.startsWith("/api/") ||
-    !pathname.startsWith("/admin")
+    pathname === '/' ||
+    publicPaths.some(path => pathname.startsWith(path)) ||
+    !pathname.startsWith('/admin')
   ) {
     return NextResponse.next()
   }
   
-  // Para rotas /admin/* (exceto login e health), verificar autenticação
-  if (pathname.startsWith("/admin")) {
+  // Apenas para rotas /admin/* (exceto as públicas acima)
+  try {
     const token = await getToken({ 
       req, 
-      secret: process.env.NEXTAUTH_SECRET 
+      secret: process.env.NEXTAUTH_SECRET,
+      secureCookie: process.env.NODE_ENV === 'production'
     })
     
     if (!token) {
@@ -32,6 +38,10 @@ export async function middleware(req: NextRequest) {
       loginUrl.searchParams.set('callbackUrl', pathname)
       return NextResponse.redirect(loginUrl)
     }
+  } catch (error) {
+    console.error('Middleware auth error:', error)
+    // Em caso de erro, redirecionar para login
+    return NextResponse.redirect(new URL('/admin/login', req.url))
   }
   
   return NextResponse.next()
