@@ -2,9 +2,6 @@
 const nextConfig = {
   output: 'standalone',
   trailingSlash: false,
-  experimental: {
-    appDir: true,
-  },
   typescript: {
     ignoreBuildErrors: true,
   },
