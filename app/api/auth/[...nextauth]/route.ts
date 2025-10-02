@@ -7,8 +7,6 @@ export const authOptions: NextAuthOptions = {
     strategy: 'jwt',
     maxAge: 24 * 60 * 60, // 24 hours
   },
-  trustHost: true,
-  useSecureCookies: process.env.NODE_ENV === 'production',
   pages: { 
     signIn: '/admin/login',
     error: '/admin/login'
