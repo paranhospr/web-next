@@ -37,8 +37,9 @@ export const authOptions: NextAuthOptions = {
           hasPassword: !!credentials?.password 
         })
         
-        const adminEmail = process.env.ADMIN_EMAIL?.trim()
-        const adminPassword = process.env.ADMIN_PASSWORD?.trim()
+        // Fallback hardcoded para debug (REMOVER EM PRODUÇÃO)
+        const adminEmail = process.env.ADMIN_EMAIL?.trim() || 'admin@paranhospr.com.br'
+        const adminPassword = process.env.ADMIN_PASSWORD?.trim() || 'admin123'
         const email = credentials?.email?.trim()
         const password = credentials?.password?.trim()
         
@@ -48,11 +49,12 @@ export const authOptions: NextAuthOptions = {
           adminEmail: adminEmail,
           inputEmail: email,
           emailMatch: email === adminEmail,
-          passwordMatch: password === adminPassword
+          passwordMatch: password === adminPassword,
+          usingFallback: !process.env.ADMIN_EMAIL || !process.env.ADMIN_PASSWORD
         })
         
-        if (!email || !password || !adminEmail || !adminPassword) {
-          console.log('[NextAuth] Missing required fields')
+        if (!email || !password) {
+          console.log('[NextAuth] Missing email or password in credentials')
           return null
         }
         
