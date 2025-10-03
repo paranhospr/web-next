@@ -4,7 +4,6 @@ import Credentials from "next-auth/providers/credentials"
 export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   trustHost: true,
-  useSecureCookies: process.env.NODE_ENV === 'production',
   session: {
     strategy: 'jwt',
     maxAge: 24 * 60 * 60, // 24 hours
