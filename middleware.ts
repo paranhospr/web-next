@@ -1,36 +1,41 @@
-import { withAuth } from "next-auth/middleware"
 import { NextResponse } from "next/server"
+import { getToken } from "next-auth/jwt"
+import type { NextRequest } from "next/server"
 
-export default withAuth(
-  function middleware(req) {
-    // Middleware executado após validação de autenticação
+export async function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl
+  
+  // Rotas públicas sempre liberadas (sem necessidade de autenticação)
+  if (pathname === "/admin/health") {
     return NextResponse.next()
-  },
-  {
-    callbacks: {
-      authorized: ({ token, req }) => {
-        const { pathname } = req.nextUrl
-        
-        // Rotas públicas sempre liberadas (sem necessidade de autenticação)
-        if (pathname === "/admin/health") return true
-        if (pathname === "/admin/login") return true  // CRÍTICO: libera página de login
-        if (pathname.startsWith("/api/auth/")) return true
-        
-        // Rotas admin protegidas - requer token válido
-        if (pathname.startsWith("/admin")) {
-          return !!token
-        }
-        
-        // Outras rotas liberadas
-        return true
-      }
-    },
-    pages: {
-      signIn: "/admin/login"
-    },
-    secret: process.env.NEXTAUTH_SECRET
   }
-)
+  
+  if (pathname === "/admin/login") {
+    return NextResponse.next()
+  }
+  
+  if (pathname.startsWith("/api/auth/")) {
+    return NextResponse.next()
+  }
+  
+  // Para rotas admin protegidas, verificar token
+  if (pathname.startsWith("/admin")) {
+    const token = await getToken({ 
+      req,
+      secret: process.env.NEXTAUTH_SECRET,
+      secureCookie: process.env.NODE_ENV === "production"
+    })
+    
+    // Se não há token, redirecionar para login
+    if (!token) {
+      const loginUrl = new URL("/admin/login", req.url)
+      loginUrl.searchParams.set("callbackUrl", pathname)
+      return NextResponse.redirect(loginUrl)
+    }
+  }
+  
+  return NextResponse.next()
+}
 
 export const config = {
   matcher: [
