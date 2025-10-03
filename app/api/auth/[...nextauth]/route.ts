@@ -32,16 +32,37 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
+        console.log('[NextAuth] Authorize called')
+        console.log('[NextAuth] Credentials received:', { 
+          email: credentials?.email, 
+          hasPassword: !!credentials?.password 
+        })
+        
         const adminEmail = process.env.ADMIN_EMAIL?.trim()
         const adminPassword = process.env.ADMIN_PASSWORD?.trim()
         const email = credentials?.email?.trim()
         const password = credentials?.password?.trim()
         
-        if (!email || !password || !adminEmail || !adminPassword) return null
+        console.log('[NextAuth] Environment check:', {
+          hasAdminEmail: !!adminEmail,
+          hasAdminPassword: !!adminPassword,
+          adminEmail: adminEmail,
+          inputEmail: email,
+          emailMatch: email === adminEmail,
+          passwordMatch: password === adminPassword
+        })
+        
+        if (!email || !password || !adminEmail || !adminPassword) {
+          console.log('[NextAuth] Missing required fields')
+          return null
+        }
         
         if (email === adminEmail && password === adminPassword) {
+          console.log('[NextAuth] Authentication successful!')
           return { id: "admin-1", name: "Admin", email: adminEmail }
         }
+        
+        console.log('[NextAuth] Authentication failed - credentials mismatch')
         return null
       }
     })
@@ -49,6 +70,7 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
+        console.log('[NextAuth] JWT callback - adding user to token')
         token.id = user.id
         token.email = user.email
         token.name = user.name
@@ -57,13 +79,15 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, token }) {
       if (token) {
+        console.log('[NextAuth] Session callback - adding token to session')
         session.user.id = token.id as string
         session.user.email = token.email as string
         session.user.name = token.name as string
       }
       return session
     }
-  }
+  },
+  debug: true // Ativar modo debug
 }
 
 const handler = NextAuth(authOptions)
