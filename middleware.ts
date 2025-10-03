@@ -26,7 +26,8 @@ export default withAuth(
     },
     pages: {
       signIn: "/admin/login"
-    }
+    },
+    secret: process.env.NEXTAUTH_SECRET
   }
 )
 
