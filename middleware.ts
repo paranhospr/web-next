@@ -11,8 +11,9 @@ export default withAuth(
       authorized: ({ token, req }) => {
         const { pathname } = req.nextUrl
         
-        // Rotas públicas sempre liberadas
+        // Rotas públicas sempre liberadas (sem necessidade de autenticação)
         if (pathname === "/admin/health") return true
+        if (pathname === "/admin/login") return true  // CRÍTICO: libera página de login
         if (pathname.startsWith("/api/auth/")) return true
         
         // Rotas admin protegidas - requer token válido
