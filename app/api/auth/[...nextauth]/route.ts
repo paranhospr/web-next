@@ -4,7 +4,6 @@ import Credentials from "next-auth/providers/credentials"
 export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   trustHost: true,
-  useSecureCookies: true, // Ativar cookies seguros explicitamente
   session: {
     strategy: 'jwt',
     maxAge: 24 * 60 * 60, // 24 hours
@@ -13,18 +12,6 @@ export const authOptions: NextAuthOptions = {
     signIn: '/admin/login',
     error: '/admin/login'
   },
-  // REMOVER configuração manual de cookies - deixar NextAuth gerenciar
-  // cookies: {
-  //   sessionToken: {
-  //     name: '__Secure-next-auth.session-token', // NextAuth adiciona prefixo automaticamente
-  //     options: {
-  //       httpOnly: true,
-  //       sameSite: 'lax',
-  //       path: '/',
-  //       secure: true
-  //     }
-  //   }
-  // },
   providers: [
     Credentials({
       name: "credentials",
