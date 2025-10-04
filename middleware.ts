@@ -20,24 +20,14 @@ export async function middleware(req: NextRequest) {
   
   // Para rotas admin protegidas, verificar token
   if (pathname.startsWith("/admin")) {
-    // Em produção (HTTPS), NextAuth usa cookies seguros automaticamente
-    // Tentar ler com ambas as configurações
-    let token = await getToken({ 
+    // O cookie é 'next-auth.session-token' (sem prefixo __Secure-)
+    // Mesmo em HTTPS, usar secureCookie=false pois o nome não tem prefixo
+    const token = await getToken({ 
       req,
       secret: process.env.NEXTAUTH_SECRET,
-      secureCookie: true, // Produção usa cookies seguros
+      secureCookie: false, // Cookie não tem prefixo __Secure-
       cookieName: "next-auth.session-token"
     })
-    
-    // Se não encontrou com secure, tentar sem secure (fallback)
-    if (!token) {
-      token = await getToken({ 
-        req,
-        secret: process.env.NEXTAUTH_SECRET,
-        secureCookie: false,
-        cookieName: "next-auth.session-token"
-      })
-    }
     
     // Se não há token, redirecionar para login
     if (!token) {
