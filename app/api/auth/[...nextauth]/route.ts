@@ -8,7 +8,6 @@ export const authOptions: NextAuthOptions = {
     strategy: 'jwt',
     maxAge: 24 * 60 * 60, // 24 hours
   },
-
   pages: { 
     signIn: '/admin/login',
     error: '/admin/login'
@@ -27,9 +26,15 @@ export const authOptions: NextAuthOptions = {
           hasPassword: !!credentials?.password 
         })
         
-        // Fallback hardcoded para debug (REMOVER EM PRODUÇÃO)
-        const adminEmail = process.env.ADMIN_EMAIL?.trim() || 'admin@paranhospr.com.br'
-        const adminPassword = process.env.ADMIN_PASSWORD?.trim() || 'admin123'
+        // STRICT ENV CHECK - NO FALLBACKS
+        const adminEmail = process.env.ADMIN_EMAIL?.trim()
+        const adminPassword = process.env.ADMIN_PASSWORD?.trim()
+        
+        if (!adminEmail || !adminPassword) {
+          console.error('[NextAuth] CRITICAL: ADMIN_EMAIL or ADMIN_PASSWORD not set in environment')
+          return null
+        }
+        
         const email = credentials?.email?.trim()
         const password = credentials?.password?.trim()
         
@@ -39,8 +44,7 @@ export const authOptions: NextAuthOptions = {
           adminEmail: adminEmail,
           inputEmail: email,
           emailMatch: email === adminEmail,
-          passwordMatch: password === adminPassword,
-          usingFallback: !process.env.ADMIN_EMAIL || !process.env.ADMIN_PASSWORD
+          passwordMatch: password === adminPassword
         })
         
         if (!email || !password) {
@@ -78,7 +82,7 @@ export const authOptions: NextAuthOptions = {
       return session
     }
   },
-  debug: true // Ativar modo debug
+  debug: true
 }
 
 const handler = NextAuth(authOptions)
