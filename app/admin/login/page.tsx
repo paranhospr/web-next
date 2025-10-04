@@ -4,8 +4,8 @@ import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 
 export default function Login(){
-  const [email,setEmail]=useState('admin@paranhospr.com.br')
-  const [password,setPassword]=useState('admin123')
+  const [email,setEmail]=useState('')
+  const [password,setPassword]=useState('')
   const [err,setErr]=useState<string|null>(null)
   const r=useRouter()
   async function submit(e:any){
