@@ -23,7 +23,8 @@ export async function middleware(req: NextRequest) {
     const token = await getToken({ 
       req,
       secret: process.env.NEXTAUTH_SECRET,
-      secureCookie: process.env.NODE_ENV === "production"
+      secureCookie: false, // Usar false para corresponder com a config do NextAuth
+      cookieName: "next-auth.session-token"
     })
     
     // Se não há token, redirecionar para login
