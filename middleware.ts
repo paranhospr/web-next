@@ -1,46 +1,28 @@
-import { NextResponse } from "next/server"
-import { getToken } from "next-auth/jwt"
-import type { NextRequest } from "next/server"
+import { NextResponse } from "next/server";
+import { getToken } from "next-auth/jwt";
+import type { NextRequest } from "next/server";
 
 export async function middleware(req: NextRequest) {
-  const { pathname } = req.nextUrl
-  
-  // Lista de rotas públicas que NÃO precisam de autenticação
-  const publicPaths = [
-    "/admin/health",
-    "/admin/login",
-  ]
-  
-  // Se a rota é pública, permitir acesso direto
-  if (publicPaths.includes(pathname)) {
-    return NextResponse.next()
+  const { pathname } = req.nextUrl;
+
+  // Rotas públicas - liberar acesso direto
+  if (pathname === "/admin/login" || pathname === "/admin/health" || pathname.startsWith("/api/auth/")) {
+    return NextResponse.next();
   }
-  
-  // Se a rota é da API de autenticação, permitir acesso direto
-  if (pathname.startsWith("/api/auth/")) {
-    return NextResponse.next()
-  }
-  
-  // Para rotas admin protegidas, verificar token
+
+  // Proteger rotas /admin/*
   if (pathname.startsWith("/admin")) {
-    const token = await getToken({ 
-      req,
-      secret: process.env.NEXTAUTH_SECRET,
-    })
-    
-    // Se não há token, redirecionar para login
+    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
     if (!token) {
-      const loginUrl = new URL("/admin/login", req.url)
-      loginUrl.searchParams.set("callbackUrl", pathname)
-      return NextResponse.redirect(loginUrl)
+      const url = new URL("/admin/login", req.url);
+      url.searchParams.set("callbackUrl", pathname);
+      return NextResponse.redirect(url);
     }
   }
   
-  return NextResponse.next()
+  return NextResponse.next();
 }
 
-export const config = {
-  matcher: [
-    "/admin/:path*"
-  ]
-}
+export const config = { 
+  matcher: ["/admin/:path*"] 
+};
