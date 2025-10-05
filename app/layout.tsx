@@ -1,10 +1,13 @@
-
+import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
 import './globals.css'
 import { Providers } from './providers'
 
-export const metadata = {
+const inter = Inter({ subsets: ['latin'] })
+
+export const metadata: Metadata = {
   title: 'Paranhos PR - Admin',
-  description: 'Painel Administrativo',
+  description: 'Sistema administrativo',
 }
 
 export default function RootLayout({
@@ -14,7 +17,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR">
-      <body>
+      <body className={inter.className}>
         <Providers>{children}</Providers>
       </body>
     </html>

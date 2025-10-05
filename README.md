@@ -1,9 +1,8 @@
+# Paranhos PR - Web Next
 
-# Paranhos PR - Admin Panel
+Sistema web do município de Paranhos PR.
 
-Sistema administrativo para o município de Paranhos PR.
-
-## Tecnologias
+## Stack
 
 - Next.js 14.2.13
 - React 18.2.0
@@ -11,27 +10,20 @@ Sistema administrativo para o município de Paranhos PR.
 - TypeScript
 - Tailwind CSS
 
-## Estrutura
+## Desenvolvimento
 
-```
-app/
-├── layout.tsx          # Layout raiz
-├── providers.tsx       # SessionProvider
-├── globals.css         # Estilos globais
-├── admin/
-│   ├── login/
-│   │   └── page.tsx   # Página de login
-│   └── dashboard/
-│       └── page.tsx   # Dashboard protegido
-└── api/
-    └── auth/
-        └── [...nextauth]/
-            └── route.ts # Configuração NextAuth
+```bash
+npm install
+npm run dev
 ```
 
-## Variáveis de Ambiente
+## Deploy
 
-```env
+Deploy automático via Vercel conectado ao GitHub.
+
+### Variáveis de Ambiente
+
+```
 NEXTAUTH_URL=https://seu-dominio.com
 NEXTAUTH_SECRET=seu-secret-aqui
 ADMIN_EMAIL=admin@paranhospr.com.br
@@ -39,13 +31,15 @@ ADMIN_PASSWORD=sua-senha-aqui
 NEXT_PUBLIC_API_URL=https://paranhos-api-v2.onrender.com
 ```
 
-## Deploy
+## Estrutura
 
-1. Configure as variáveis de ambiente
-2. Deploy na Vercel
-3. Acesse /admin/login para fazer login
+- `/app` - Páginas e rotas da aplicação
+- `/app/admin` - Área administrativa protegida
+- `/app/api/auth` - Autenticação NextAuth
+- `/middleware.ts` - Proteção de rotas
 
-## Credenciais Padrão
+## Autenticação
 
-- Email: admin@paranhospr.com.br
-- Senha: Admin2024Paranhos
+Sistema de autenticação via NextAuth com provider de credenciais.
+
+Acesso admin: `/admin/login`
