@@ -1,9 +1,17 @@
+
 import './globals.css'
 import { Providers } from './providers'
 
-export const metadata = { title: 'Paranhos PR — Portal Oficial' }
+export const metadata = {
+  title: 'Paranhos PR - Admin',
+  description: 'Painel Administrativo',
+}
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   return (
     <html lang="pt-BR">
       <body>
