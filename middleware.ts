@@ -5,18 +5,20 @@ import type { NextRequest } from "next/server";
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // ✅ Rotas públicas: sem verificar token
-  if (pathname === "/admin/login" || pathname === "/admin/health" || pathname.startsWith("/api/auth/")) {
+  // ✅ Rotas sempre públicas (sem verificação de token)
+  if (pathname === "/admin/health" || pathname === "/admin/login") {
     return NextResponse.next();
   }
 
-  // 🔒 Rotas /admin/* protegidas: exigem token
+  // 🔒 Rotas /admin/* protegidas: verificar token
   if (pathname.startsWith("/admin")) {
     const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+    
     if (!token) {
-      const url = new URL("/admin/login", req.url);
-      url.searchParams.set("callbackUrl", pathname);
-      return NextResponse.redirect(url);
+      // Redirecionar DIRETAMENTE para /admin/login (não para /api/auth/signin)
+      const loginUrl = new URL("/admin/login", req.url);
+      loginUrl.searchParams.set("callbackUrl", pathname);
+      return NextResponse.redirect(loginUrl);
     }
   }
 
