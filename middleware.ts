@@ -1,41 +1,43 @@
-import { withAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { getToken } from "next-auth/jwt";
 
-export default withAuth(
-  function middleware(req) {
-    // Permitir todas as requisições autenticadas
+export async function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
+  
+  // Permitir acesso sem autenticação a rotas públicas
+  const publicPaths = [
+    "/admin/login",
+    "/api/auth",
+  ];
+  
+  // Verificar se é uma rota pública
+  const isPublicPath = publicPaths.some(path => 
+    pathname === path || pathname.startsWith(path + "/")
+  );
+  
+  if (isPublicPath) {
     return NextResponse.next();
-  },
-  {
-    callbacks: {
-      authorized: ({ token, req }) => {
-        const { pathname } = req.nextUrl;
-        
-        // Permitir acesso sem autenticação às rotas públicas
-        if (
-          pathname === "/admin/login" ||
-          pathname === "/api/auth/signin" ||
-          pathname === "/api/auth/callback" ||
-          pathname === "/api/auth/csrf" ||
-          pathname.startsWith("/api/auth/callback/")
-        ) {
-          return true;
-        }
-        
-        // Exigir autenticação para todas as outras rotas /admin/*
-        if (pathname.startsWith("/admin")) {
-          return !!token;
-        }
-        
-        // Permitir acesso a todas as outras rotas
-        return true;
-      },
-    },
   }
-);
+  
+  // Para rotas protegidas /admin/*, verificar autenticação
+  if (pathname.startsWith("/admin")) {
+    const token = await getToken({ 
+      req,
+      secret: process.env.NEXTAUTH_SECRET 
+    });
+    
+    if (!token) {
+      // Redirecionar para login se não autenticado
+      const url = new URL("/admin/login", req.url);
+      url.searchParams.set("callbackUrl", pathname);
+      return NextResponse.redirect(url);
+    }
+  }
+  
+  return NextResponse.next();
+}
 
 export const config = {
-  matcher: [
-    "/admin/:path*",
-  ]
+  matcher: ["/admin/:path*"]
 };
