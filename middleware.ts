@@ -1,34 +1,25 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { getToken } from "next-auth/jwt";
 
-export async function middleware(req: NextRequest) {
+export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   
-  // Permitir acesso sem autenticação a rotas públicas
-  const publicPaths = [
-    "/admin/login",
-    "/api/auth",
-  ];
-  
-  // Verificar se é uma rota pública
-  const isPublicPath = publicPaths.some(path => 
-    pathname === path || pathname.startsWith(path + "/")
-  );
-  
-  if (isPublicPath) {
+  // Permitir acesso à página de login sempre
+  if (pathname === "/admin/login") {
     return NextResponse.next();
   }
   
-  // Para rotas protegidas /admin/*, verificar autenticação
+  // Permitir todas as rotas de autenticação
+  if (pathname.startsWith("/api/auth")) {
+    return NextResponse.next();
+  }
+  
+  // Para outras rotas admin, verificar se há token de sessão
   if (pathname.startsWith("/admin")) {
-    const token = await getToken({ 
-      req,
-      secret: process.env.NEXTAUTH_SECRET 
-    });
+    const sessionToken = req.cookies.get("next-auth.session-token") || 
+                        req.cookies.get("__Secure-next-auth.session-token");
     
-    if (!token) {
-      // Redirecionar para login se não autenticado
+    if (!sessionToken) {
       const url = new URL("/admin/login", req.url);
       url.searchParams.set("callbackUrl", pathname);
       return NextResponse.redirect(url);
