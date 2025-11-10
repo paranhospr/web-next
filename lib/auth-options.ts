@@ -1,6 +1,10 @@
 
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcryptjs";
+
+const prisma = new PrismaClient();
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -15,35 +19,45 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-        // Verificação com credenciais de ambiente
-        const adminEmail = process.env.ADMIN_EMAIL || 'admin@paranhospr.com.br';
-        const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
+        try {
+          // Buscar usuário no banco de dados
+          const user = await prisma.user.findUnique({
+            where: {
+              email: credentials.email
+            }
+          });
 
-        if (credentials.email === adminEmail && credentials.password === adminPassword) {
+          if (!user || !user.password) {
+            return null;
+          }
+
+          // Verificar senha com bcrypt
+          const isPasswordValid = await bcrypt.compare(
+            credentials.password,
+            user.password
+          );
+
+          if (!isPasswordValid) {
+            return null;
+          }
+
+          // Retornar usuário autenticado
           return {
-            id: '1',
-            email: adminEmail,
-            name: 'Administrador',
+            id: user.id.toString(),
+            email: user.email,
+            name: user.name || 'Admin',
             role: 'admin'
           };
+        } catch (error) {
+          console.error('Auth error:', error);
+          return null;
         }
-
-        // Credenciais de teste
-        if (credentials.email === 'john@doe.com' && credentials.password === 'johndoe123') {
-          return {
-            id: '2',
-            email: 'john@doe.com',
-            name: 'John Doe',
-            role: 'admin'
-          };
-        }
-
-        return null;
       }
     })
   ],
   pages: {
     signIn: '/admin/login',
+    error: '/admin/login', // Redirecionar erros para a página de login
   },
   callbacks: {
     async jwt({ token, user }) {
