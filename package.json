@@ -2,8 +2,8 @@
   "name": "app",
   "private": true,
   "scripts": {
-  "prebuild": "npx prisma generate",
-  "build": "next build",
+  "postinstall": "npx prisma generate",
+  "build": "npx prisma generate && next build",
   "start": "next start",
   "dev": "next dev"
 },
