@@ -1,5 +1,12 @@
 {
-  "buildCommand": "cd app && npm run build",
-  "installCommand": "cd app && npm install",
-  "outputDirectory": "app/.next"
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/next"
+    }
+  ],
+  "buildCommand": "npx prisma generate && next build",
+  "outputDirectory": ".next",
+  "installCommand": "npm install",
+  "framework": "nextjs"
 }
