@@ -2,11 +2,11 @@
   "name": "app",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
+  "prebuild": "npx prisma generate",
+  "build": "next build",
+  "start": "next start",
+  "dev": "next dev"
+},
   "devDependencies": {
     "@types/node": "20.6.2",
     "@types/react": "18.2.22",
