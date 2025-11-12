@@ -1,3 +1,8 @@
+export const runtime = 'nodejs';
+
+export function GET() {
+  return new Response('ok', { status: 200 });
+}
 
 import { NextResponse } from 'next/server';
 
